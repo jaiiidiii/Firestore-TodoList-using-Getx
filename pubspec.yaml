@@ -31,6 +31,9 @@ dependencies:
   get: ^3.24.0
   dio: ^4.0.0
   flutter_staggered_grid_view: ^0.4.0
+  firebase_core: ^0.4.0+9
+  firebase_auth: ^0.14.0+5
+  cloud_firestore: ^0.12.9+5
 
 
 dev_dependencies:

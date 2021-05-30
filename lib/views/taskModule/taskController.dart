@@ -1,7 +1,11 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
 import 'package:morphosis_demo/model/taskModel.dart';
 
+import '../auth.dart';
+
 class TaskController extends GetxController {
+  //https://everyday.codes/tutorials/developing-a-todo-app-with-flutter-part-3/
   // var chatsList = List<AllThreads>().obs;
   // var chatList = List<Chats>().obs;
   var isLoading = false.obs;
@@ -46,4 +50,22 @@ class TaskController extends GetxController {
       isLoading(false);
     }
   }
+
+  final List<Task> tasksList = [];
+  final Authentication auth = new Authentication();
+  FirebaseUser user;
+
+  void onTaskCreated(String name, String desc) {
+    // setState(() {
+    tasksList.add(Task(name: name, description: desc, completed: false.obs));
+    // });
+  }
+
+  void onTaskToggled(Task task) {
+    // setState(() {
+    task.toggleComplete(true);
+    // task.setCompleted(!task.isCompleted());
+    // });
+  }
+
 }

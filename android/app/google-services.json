@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "646969063558",
+    "project_id": "morphosisdemo",
+    "storage_bucket": "morphosisdemo.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:646969063558:android:f14c704c7674e18f2b7907",
+        "android_client_info": {
+          "package_name": "com.jayzon.morphosis_demo"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "646969063558-hg3u3kefk028po4h298fv2iieipth20l.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDVuyAiPwxYDEPPHGuUnOAulXhVXgSiMWI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "646969063558-hg3u3kefk028po4h298fv2iieipth20l.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

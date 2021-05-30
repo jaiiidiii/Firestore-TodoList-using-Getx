@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'views/baseModule/mainBottomBar.dart';
+import 'views/loginModule/loginPage.dart';
 
 void main() {
   runApp(MyApp());
@@ -26,7 +27,8 @@ class MyApp extends StatelessWidget {
       ),
       debugShowCheckedModeBanner: false,
       // home: MyHomePage(title: 'Flutter Demo Home Page'),
-      home: MainBottombar(),
+      // home: MainBottombar(),
+      home: LoginPage(),
     );
   }
 }

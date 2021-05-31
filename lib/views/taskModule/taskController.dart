@@ -1,28 +1,41 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
 import 'package:morphosis_demo/model/taskModel.dart';
+import 'package:morphosis_demo/model/todo.dart';
+import 'package:morphosis_demo/services/database.dart';
+import 'package:morphosis_demo/views/loginModule/loginController.dart';
 
 import '../auth.dart';
 
 class TaskController extends GetxController {
-  //https://everyday.codes/tutorials/developing-a-todo-app-with-flutter-part-3/
-  // var chatsList = List<AllThreads>().obs;
-  // var chatList = List<Chats>().obs;
   var isLoading = false.obs;
-
+  String uid;
   var defaultStatus = false.obs;
   var tasks = <Task>[].obs;
+
+  final collection = Firestore.instance.collection('tasks');
+
+  Rx<List<TodoModel>> todoList = Rx<List<TodoModel>>();
+
+  List<TodoModel> get todos => todoList.value;
+  List<TodoModel> get todosCompleted =>
+      todoList.value.where((element) => element.done == true).toList();
+
   @override
   void onInit() {
+    uid = Get.find<LoginController>().user.id;
+    todoList
+        .bindStream(Database().todoStream(uid)); //stream coming from firebase
     fetchTasks();
     super.onInit();
   }
 
-  List<Task> getTaskList(bool value) {
+  List<TodoModel> getTaskList(bool value) {
     if (value) {
-      return tasks.where((t) => t.isCompleted).toList();
+      return todosCompleted;
     } else
-      return tasks;
+      return todos;
   }
 
   void fetchTasks() async {
@@ -53,11 +66,25 @@ class TaskController extends GetxController {
 
   final List<Task> tasksList = [];
   final Authentication auth = new Authentication();
-  FirebaseUser user;
+  // FirebaseUser user;
 
-  void onTaskCreated(String name, String desc) {
+  void onTaskCreated(String name, String desc, bool completed) {
+    Database().addTodo(name, desc, uid, completed);
+  }
+
+//updateFirestore
+  void onTaskUpdate(String name, String desc, bool completed, String todoId) {
+    Database().updateTodo(name, desc, completed, uid, todoId);
     // setState(() {
-    tasksList.add(Task(name: name, description: desc, completed: false.obs));
+    // tasksList.add(Task(name: name, description: desc, completed: false.obs));
+    // });
+  }
+
+  //updateFirestore
+  void onTaskDelete(String todoId) {
+    Database().deleteTodo(uid, todoId);
+    // setState(() {
+    // tasksList.add(Task(name: name, description: desc, completed: false.obs));
     // });
   }
 
@@ -67,5 +94,4 @@ class TaskController extends GetxController {
     // task.setCompleted(!task.isCompleted());
     // });
   }
-
 }

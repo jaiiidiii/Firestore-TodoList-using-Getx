@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:morphosis_demo/model/todo.dart';
 import 'package:morphosis_demo/views/taskModule/taskPage.dart';
 import 'package:morphosis_demo/widgets/customLoaderWidget.dart';
 import 'taskController.dart';
@@ -26,66 +27,48 @@ class AllTasksPage extends StatelessWidget {
                 // Navigator.pop(context);
               },
             ),
-            body: taskController.getTaskList(isCompletedTaskPage).isEmpty
+            body: taskController.getTaskList(isCompletedTaskPage) == null ||
+                    taskController.getTaskList(isCompletedTaskPage).isBlank
                 ? Center(
-                    child: Text('Add your first task'),
+                    child: isCompletedTaskPage
+                        ? Text('No Completed Tasks')
+                        : Text('Add your first task'),
                   )
                 : ListView.builder(
-                    // How many items to render
                     itemCount:
                         taskController.getTaskList(isCompletedTaskPage).length,
-                    // Functions that accepts an index and renders a task
                     itemBuilder: (context, index) {
-                      return Obx(() => ListTile(
-                            onTap: () {
-                              Get.to(TaskPage(
-                                  task: taskController.getTaskList(
-                                      isCompletedTaskPage)[index]));
-                            },
-                            leading: IconButton(
-                              icon: Icon(
-                                taskController
-                                            .getTaskList(
-                                                isCompletedTaskPage)[index]
-                                            .completed
-                                            .value ==
-                                        true
-                                    ? Icons.check_box
-                                    : Icons.check_box_outline_blank,
-                              ),
-                              onPressed: isCompletedTaskPage
-                                  ? () {}
-                                  : () {
-                                      taskController
-                                          .getTaskList(
-                                              isCompletedTaskPage)[index]
-                                          .toggleComplete(taskController
-                                                  .getTaskList(
-                                                      isCompletedTaskPage)[index]
-                                                  .completed
-                                                  .isTrue
-                                              ? false
-                                              : true);
-                                    },
-                            ),
-                            title: Text(taskController
-                                .getTaskList(isCompletedTaskPage)[index]
-                                .name),
-                            subtitle: Text(taskController
-                                .getTaskList(isCompletedTaskPage)[index]
-                                .description),
-                            trailing: IconButton(
-                              icon: Icon(
-                                Icons.delete,
-                              ),
-                              onPressed: () {
-                                taskController
-                                    .getTaskList(isCompletedTaskPage)
-                                    .remove(taskController.getTaskList(
-                                        isCompletedTaskPage)[index]);
-                              },
-                            ),
-                          ));
+                      TodoModel todo = taskController
+                          .getTaskList(isCompletedTaskPage)[index];
+                      return ListTile(
+                        onTap: () {
+                          // Get.to(TaskPage(
+                          //     task: taskController.getTaskList(
+                          //         isCompletedTaskPage)[index]));
+                        },
+                        leading: Checkbox(
+                          value: todo.done,
+                          onChanged: (newValue) {
+                            taskController.onTaskUpdate(todo.name,
+                                todo.description, newValue, todo.todoId);
+                            // Database().updateTodo(newValue, uid, todo.todoId);
+                          },
+                        ),
+                        title: Text(todo.name),
+                        subtitle: Text(todo.description),
+                        trailing: IconButton(
+                          icon: Icon(
+                            Icons.delete,
+                          ),
+                          onPressed: () {
+                            taskController.onTaskDelete(todo.todoId);
+                            // taskController
+                            //     .getTaskList(isCompletedTaskPage)
+                            //     .remove(taskController.getTaskList(
+                            //         isCompletedTaskPage)[index]);
+                          },
+                        ),
+                      );
                     }),
           ),
         ));

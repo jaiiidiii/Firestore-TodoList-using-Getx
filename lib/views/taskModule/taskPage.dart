@@ -65,6 +65,8 @@ class __TaskFormState extends State<_TaskForm> {
     task.name = _titleController.text;
     task.description = _descriptionController.text;
     taskController.tasks.add(task);
+    taskController.onTaskCreated(_titleController.text,
+        _descriptionController.text, task.completed.value);
     // taskController.
     Get.back();
     //TODO implement save to firestore
@@ -117,6 +119,7 @@ class __TaskFormState extends State<_TaskForm> {
                 ],
               ),
               // Spacer(),
+              // Expanded(child: null),
               ElevatedButton(
                 onPressed: () => _save(context),
                 child: Container(

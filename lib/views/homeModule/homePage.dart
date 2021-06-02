@@ -14,57 +14,61 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  TextEditingController _searchTextField = TextEditingController();
   final HomeController homeController =
       Get.put<HomeController>(HomeController());
-  @override
-  void initState() {
-    _searchTextField.text = "Search";
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    _searchTextField.dispose();
-    super.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {
     return Obx(() => CustomLoaderWidget(
           isTrue: homeController.isLoading.value,
           child: Scaffold(
-            body: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: CupertinoSearchTextField(
-                    controller: _searchTextField,
+            body: RefreshIndicator(
+              onRefresh: () async {
+                homeController.fetchMovies();
+              },
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: CupertinoSearchTextField(
+                      placeholder: "Search",
+                      controller: homeController.searchTextField,
+                      onChanged: homeController.onSearchTextChanged,
+                    ),
                   ),
-                ),
-                // Spacer(),
-                // homeController.moviesList.isEmpty
-                //     ? SizedBox()
-                //     :
-                Expanded(
-                  child: StaggeredGridView.countBuilder(
-                    shrinkWrap: true,
-                    crossAxisCount: 4,
-                    itemCount: homeController.moviesList.length,
-                    itemBuilder: (BuildContext context, int index) =>
-                        _Tile(homeController.moviesList[index]),
-                    staggeredTileBuilder: (int index) =>
-                        new StaggeredTile.count(2, 2
-                            // index.isEven ? 2 : 1
-                            ),
-                    mainAxisSpacing: 4.0,
-                    crossAxisSpacing: 4.0,
-                  ),
-                )
-                // Spacer(),
-              ],
+                  Expanded(
+                    child: homeController.searchResult.length != 0
+                        ? StaggeredGridView.countBuilder(
+                            shrinkWrap: true,
+                            crossAxisCount: 4,
+                            itemCount: homeController.searchResult.length,
+                            itemBuilder: (BuildContext context, int index) =>
+                                _Tile(homeController.searchResult[index]),
+                            staggeredTileBuilder: (int index) =>
+                                new StaggeredTile.count(2, 2
+                                    // index.isEven ? 2 : 1
+                                    ),
+                            mainAxisSpacing: 4.0,
+                            crossAxisSpacing: 4.0,
+                          )
+                        : StaggeredGridView.countBuilder(
+                            shrinkWrap: true,
+                            crossAxisCount: 4,
+                            itemCount: homeController.moviesList.length,
+                            itemBuilder: (BuildContext context, int index) =>
+                                _Tile(homeController.moviesList[index]),
+                            staggeredTileBuilder: (int index) =>
+                                new StaggeredTile.count(2, 2
+                                    // index.isEven ? 2 : 1
+                                    ),
+                            mainAxisSpacing: 4.0,
+                            crossAxisSpacing: 4.0,
+                          ),
+                  )
+                ],
+              ),
             ),
           ),
         ));

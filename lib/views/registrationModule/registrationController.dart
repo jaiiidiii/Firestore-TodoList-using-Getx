@@ -3,16 +3,15 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:morphosis_demo/model/user.dart';
 import 'package:morphosis_demo/services/database.dart';
-import 'package:morphosis_demo/views/baseModule/mainBottomBar.dart';
 
-class LoginController extends GetxController {
+class RegistrationController extends GetxController {
   var isLoading = false.obs;
-  final TextEditingController emailController =
-      TextEditingController(text: 'junaid@morphosis.com');
-  final TextEditingController passwordController =
-      TextEditingController(text: 'Morphosis12345');
-
-  final loginPageFormKey = GlobalKey<FormState>();
+  final TextEditingController nameController = TextEditingController();
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+  final TextEditingController confirmPasswordController =
+      TextEditingController();
+  final registerPageFormKey = GlobalKey<FormState>();
 
   Rx<UserModel> _userModel = UserModel().obs;
   UserModel get user => _userModel.value;
@@ -26,37 +25,39 @@ class LoginController extends GetxController {
   FirebaseAuth _auth = FirebaseAuth.instance;
   Rx<FirebaseUser> _firebaseUser = Rx<FirebaseUser>();
 
+  // FirebaseUser get user => _firebaseUser.value;
+
   @override
   void onInit() {
     _firebaseUser.bindStream(_auth.onAuthStateChanged);
     super.onInit();
   }
 
-  void login() async {
+  void createUser() async {
     try {
-      if (!loginPageFormKey.currentState.validate()) {
+      if (!registerPageFormKey.currentState.validate()) {
         return null;
       }
       isLoading(true);
-
-      AuthResult _authResult = await _auth.signInWithEmailAndPassword(
+      AuthResult _authResult = await _auth.createUserWithEmailAndPassword(
           email: emailController.text.trim(),
           password: passwordController.text);
-      print("UID: " + _authResult.user.uid);
-      user = await Database().getUser(_authResult.user.uid);
-      isLoading(false);
-
-      if (user != null) {
-        Get.to(() => MainBottombar());
-      } else {
-        _showAuthFailedDialog();
+      UserModel _user = UserModel(
+        id: _authResult.user.uid,
+        name: nameController.text,
+        email: _authResult.user.email,
+      );
+      if (await Database().createNewUser(_user)) {
+        user = _user;
+        Get.back();
       }
+      isLoading(false);
     } catch (e) {
       isLoading(false);
 
       Get.snackbar(
-        "Error signing in",
-        e.message ?? '',
+        "Error creating Account",
+        e.message,
         snackPosition: SnackPosition.BOTTOM,
       );
     }

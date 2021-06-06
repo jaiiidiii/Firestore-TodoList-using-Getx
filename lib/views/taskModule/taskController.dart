@@ -1,12 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
 import 'package:morphosis_demo/model/taskModel.dart';
 import 'package:morphosis_demo/model/todo.dart';
 import 'package:morphosis_demo/services/database.dart';
 import 'package:morphosis_demo/views/loginModule/loginController.dart';
-
-import '../auth.dart';
 
 class TaskController extends GetxController {
   var isLoading = false.obs;
@@ -65,14 +62,14 @@ class TaskController extends GetxController {
   }
 
   final List<Task> tasksList = [];
-  final Authentication auth = new Authentication();
+  // final Authentication auth = new Authentication();
   // FirebaseUser user;
 
   void onTaskCreated(String name, String desc, bool completed) {
     Database().addTodo(name, desc, uid, completed);
   }
 
-//updateFirestore
+  //updateFirestore
   void onTaskUpdate(String name, String desc, bool completed, String todoId) {
     Database().updateTodo(name, desc, completed, uid, todoId);
     // setState(() {

@@ -95,7 +95,6 @@ class Database {
           .updateData({
         'name': name,
         'completed_at': newValue == true ? Timestamp.now() : null,
-        // 'dateCreated': Timestamp.now(),
         'description': description,
         "done": newValue
       });

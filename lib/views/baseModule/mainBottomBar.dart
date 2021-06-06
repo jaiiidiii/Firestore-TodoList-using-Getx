@@ -36,7 +36,12 @@ class _MainBottombarState extends State<MainBottombar> {
           onWillPop: _willPop,
           child: Scaffold(
             appBar: AppBar(
+              leading: SizedBox(),
               title: Text("Morphosis Demo"),
+              centerTitle: true,
+              actions: [
+                IconButton(icon: Icon(Icons.logout), onPressed: Get.back),
+              ],
             ),
             body: SafeArea(
                 child: baseController.allTabs[baseController.currentIndex]),

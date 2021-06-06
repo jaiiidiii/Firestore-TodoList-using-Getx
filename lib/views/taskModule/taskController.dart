@@ -1,15 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
-import 'package:morphosis_demo/model/taskModel.dart';
-import 'package:morphosis_demo/model/todo.dart';
+import 'package:morphosis_demo/model/todoModel.dart';
 import 'package:morphosis_demo/services/database.dart';
 import 'package:morphosis_demo/views/loginModule/loginController.dart';
 
 class TaskController extends GetxController {
   var isLoading = false.obs;
   String uid;
-  var defaultStatus = false.obs;
-  var tasks = <Task>[].obs;
 
   final collection = Firestore.instance.collection('tasks');
 
@@ -24,7 +21,6 @@ class TaskController extends GetxController {
     uid = Get.find<LoginController>().user.id;
     todoList
         .bindStream(Database().todoStream(uid)); //stream coming from firebase
-    fetchTasks();
     super.onInit();
   }
 
@@ -35,60 +31,23 @@ class TaskController extends GetxController {
       return todos;
   }
 
-  void fetchTasks() async {
-    try {
-      isLoading(true);
-
-      await Future.delayed(Duration(seconds: 2));
-      tasks.add(
-        Task(
-            name: 'Do homework',
-            description: 'Kindly Complete your Homeword',
-            completed: false.obs),
-      );
-      tasks.add(Task(
-          name: 'Laundry',
-          description: 'wash out laundry',
-          completed: false.obs));
-      tasks.add(Task(
-          name: 'Finish this tutorial',
-          description: 'finish baby',
-          completed: false.obs));
-    } catch (e) {
-      print(e);
-    } finally {
-      isLoading(false);
-    }
-  }
-
-  final List<Task> tasksList = [];
-  // final Authentication auth = new Authentication();
-  // FirebaseUser user;
-
   void onTaskCreated(String name, String desc, bool completed) {
+    isLoading(true);
     Database().addTodo(name, desc, uid, completed);
+    isLoading(false);
   }
 
-  //updateFirestore
   void onTaskUpdate(String name, String desc, bool completed, String todoId) {
+    isLoading(true);
+
     Database().updateTodo(name, desc, completed, uid, todoId);
-    // setState(() {
-    // tasksList.add(Task(name: name, description: desc, completed: false.obs));
-    // });
+    isLoading(false);
   }
 
-  //updateFirestore
   void onTaskDelete(String todoId) {
-    Database().deleteTodo(uid, todoId);
-    // setState(() {
-    // tasksList.add(Task(name: name, description: desc, completed: false.obs));
-    // });
-  }
+    isLoading(true);
 
-  void onTaskToggled(Task task) {
-    // setState(() {
-    task.toggleComplete(true);
-    // task.setCompleted(!task.isCompleted());
-    // });
+    Database().deleteTodo(uid, todoId);
+    isLoading(false);
   }
 }

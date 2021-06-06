@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:morphosis_demo/model/taskModel.dart';
+import 'package:morphosis_demo/model/todoModel.dart';
 import 'package:morphosis_demo/views/taskModule/taskController.dart';
 import 'package:morphosis_demo/widgets/customLoaderWidget.dart';
 
 class TaskPage extends StatelessWidget {
   TaskPage({this.task});
 
-  final Task task;
+  final TodoModel task;
   final TaskController taskController = Get.find<TaskController>();
 
   @override
@@ -27,7 +27,7 @@ class TaskPage extends StatelessWidget {
 class _TaskForm extends StatefulWidget {
   _TaskForm(this.task);
 
-  final Task task;
+  final TodoModel task;
   @override
   __TaskFormState createState() => __TaskFormState(task);
 }
@@ -37,19 +37,19 @@ class __TaskFormState extends State<_TaskForm> {
 
   __TaskFormState(this.task);
 
-  Task task;
+  TodoModel task;
   TextEditingController _titleController;
   TextEditingController _descriptionController;
   final TaskController taskController = Get.find<TaskController>();
+  var isCompleted = false.obs;
 
-  // var isCompleted = false.obs;
   void init() {
     if (task == null) {
-      task = Task(completed: false.obs);
+      isCompleted(false);
       _titleController = TextEditingController();
       _descriptionController = TextEditingController();
     } else {
-      // isCompleted = task.completed;
+      isCompleted(task.done);
       _titleController = TextEditingController(text: task.name);
       _descriptionController = TextEditingController(text: task.description);
     }
@@ -61,18 +61,15 @@ class __TaskFormState extends State<_TaskForm> {
     super.initState();
   }
 
-  void _save(BuildContext context) {
-    task.name = _titleController.text;
-    task.description = _descriptionController.text;
-    taskController.tasks.add(task);
-    taskController.onTaskCreated(_titleController.text,
-        _descriptionController.text, task.completed.value);
-    // taskController.
+  void updateTask() {
+    if (task != null) {
+      taskController.onTaskUpdate(_titleController.text,
+          _descriptionController.text, isCompleted.value, task.todoId);
+    } else {
+      taskController.onTaskCreated(_titleController.text,
+          _descriptionController.text, isCompleted.value);
+    }
     Get.back();
-    //TODO implement save to firestore
-
-    // FirebaseManager.shared.addTask(task);
-    // Navigator.of(context).pop();
   }
 
   @override
@@ -84,7 +81,6 @@ class __TaskFormState extends State<_TaskForm> {
           child: Column(
             children: [
               SizedBox(height: _padding),
-
               TextField(
                 controller: _titleController,
                 decoration: InputDecoration(
@@ -108,23 +104,19 @@ class __TaskFormState extends State<_TaskForm> {
                 children: [
                   Text('Completed ?'),
                   Obx(() => Switch(
-                        value: task.completed.value,
+                        value: isCompleted.value,
                         onChanged: (value) {
-                          // setState(() {
-                          // isCompleted.toggle();
-                          task.toggleComplete(value);
-                          // });
+                          isCompleted(value);
                         },
                       )),
                 ],
               ),
-              // Spacer(),
-              // Expanded(child: null),
               ElevatedButton(
-                onPressed: () => _save(context),
+                onPressed: () => updateTask(),
                 child: Container(
                   width: double.infinity,
-                  child: Center(child: Text(task.isNew ? 'Create' : 'Update')),
+                  child:
+                      Center(child: Text(task == null ? 'Create' : 'Update')),
                 ),
               )
             ],

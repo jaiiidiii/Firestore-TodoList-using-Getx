@@ -106,7 +106,7 @@ class LoginController extends GetxController {
       middleText: 'Double check your credentials and try again',
       actions: <Widget>[
         // usually buttons at the bottom of the dialog
-        new FlatButton(
+        new TextButton(
           child: new Text('Close'),
           onPressed: () {
             Get.back();

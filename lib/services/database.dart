@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:morphosis_demo/model/todo.dart';
+import 'package:morphosis_demo/model/todoModel.dart';
 import 'package:morphosis_demo/model/user.dart';
 
 class Database {
@@ -58,7 +58,7 @@ class Database {
         .orderBy("dateCreated", descending: true)
         .snapshots()
         .map((QuerySnapshot query) {
-      List<TodoModel> retVal = List();
+      List<TodoModel> retVal = [];
       query.documents.forEach((element) {
         retVal.add(TodoModel.fromDocumentSnapshot(element));
       });

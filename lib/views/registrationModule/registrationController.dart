@@ -25,8 +25,6 @@ class RegistrationController extends GetxController {
   FirebaseAuth _auth = FirebaseAuth.instance;
   Rx<FirebaseUser> _firebaseUser = Rx<FirebaseUser>();
 
-  // FirebaseUser get user => _firebaseUser.value;
-
   @override
   void onInit() {
     _firebaseUser.bindStream(_auth.onAuthStateChanged);
@@ -62,77 +60,4 @@ class RegistrationController extends GetxController {
       );
     }
   }
-
-  void signOut() async {
-    try {
-      await _auth.signOut();
-      clear();
-    } catch (e) {
-      Get.snackbar(
-        "Error signing out",
-        e.message,
-        snackPosition: SnackPosition.BOTTOM,
-      );
-    }
-  }
-
-  // final Authentication auth = new Authentication();
-  // FirebaseUser user;
-
-  // void doLogin() async {
-  //   try {
-  //     isLoading(true);
-  //     final user =
-  //         await auth.login(emailController.text, passwordController.text);
-  //     isLoading(false);
-
-  //     if (user != null) {
-  //       onLogin(user);
-  //       Get.to(() => MainBottombar());
-  //     } else {
-  //       _showAuthFailedDialog();
-  //     }
-  //   } catch (e) {
-  //     print(e);
-  //     isLoading(false);
-  //   }
-  // }
-
-  // Show error if login unsuccessfull
-  void _showAuthFailedDialog() {
-    // flutter defined function
-
-    Get.defaultDialog(
-      title: 'Could not log in',
-      middleText: 'Double check your credentials and try again',
-      actions: <Widget>[
-        // usually buttons at the bottom of the dialog
-        new FlatButton(
-          child: new Text('Close'),
-          onPressed: () {
-            Get.back();
-          },
-        ),
-      ],
-    );
-  }
-
-  // void onLogin(FirebaseUser user) {
-  //   // setState(() {
-  //   this.user = user;
-  //   // });
-  // }
-
-  // void signOut() async {
-  //   try {
-  //     await auth.signOut();
-  //     Get.find<UserController>().clear();
-  //   } catch (e) {
-  //     Get.snackbar(
-  //       "Error signing out",
-  //       e.message,
-  //       snackPosition: SnackPosition.BOTTOM,
-  //     );
-  //   }
-  // }
 }

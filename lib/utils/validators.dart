@@ -252,14 +252,4 @@ class Validators {
 
     return message;
   }
-
-  String isValidUserName(String value) {
-    final alphabet = RegExp(r'^[a-zA-Z]+$');
-
-    if (value == null || value.isEmpty) {
-      return 'Username is required';
-    } else if (!alphabet.hasMatch(value[0])) {
-      return 'Invalid username';
-    }
-  }
 }

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:morphosis_demo/model/todo.dart';
+import 'package:morphosis_demo/model/todoModel.dart';
 import 'package:morphosis_demo/views/taskModule/taskPage.dart';
 import 'package:morphosis_demo/widgets/customLoaderWidget.dart';
 import 'taskController.dart';
@@ -42,9 +42,7 @@ class AllTasksPage extends StatelessWidget {
                           .getTaskList(isCompletedTaskPage)[index];
                       return ListTile(
                         onTap: () {
-                          // Get.to(TaskPage(
-                          //     task: taskController.getTaskList(
-                          //         isCompletedTaskPage)[index]));
+                          Get.to(TaskPage(task: todo));
                         },
                         leading: Checkbox(
                           value: todo.done,
